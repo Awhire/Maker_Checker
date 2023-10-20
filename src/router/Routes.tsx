@@ -1,52 +1,53 @@
 import {
-    createBrowserRouter,
-    createRoutesFromElements,
-    Route,
-    RouterProvider,
-  } from "react-router-dom";
-
+  createBrowserRouter,
+  createRoutesFromElements,
+  Route,
+  RouterProvider,
+} from "react-router-dom";
 
 // Pages
 import Login from "../pages/Login";
 import Dashboard from "../pages/Dashboard";
-import Admin from "../pages/Admin";
 import NotFound from "../pages/NotFound";
-
+// admin pages
+import Admin from "../pages/admin/Index";
+import CreateAdmin from "../pages/admin/CreateAdmin";
+import ListAdmin from "../pages/admin/ListAdmin";
 
 // Layouts
 import RootLayout from "../layouts/RootLayout";
 import ProtectedLayout from "../layouts/ProtectedLayout";
 import DashboardLayout from "../layouts/DashboardLayout";
+import AdminLayout from "../layouts/AdminLayout";
 
+const router = createBrowserRouter(
+  createRoutesFromElements(
+    <Route path="/" element={<RootLayout />}>
+      <Route index element={<Login />} />
 
+      {/* Proteted layout for login routes */}
+      <Route element={<ProtectedLayout />}>
+        {/* dashboard layout for views with sidebar and topbar */}
+        <Route element={<DashboardLayout />}>
+          <Route path="dashboard" element={<Dashboard />} />
 
-  const router = createBrowserRouter(
-    createRoutesFromElements(
-      <Route path="/" element={<RootLayout />}>
-        <Route index element={<Login />} />
-  
-        {/* Proteted layout for login routes */}
-        <Route element={<ProtectedLayout />}>
-          
-          {/* dashboard layout for views with sidebar and topbar */}
-          <Route element={<DashboardLayout />}>
-            <Route path="dashboard" element={<Dashboard />} />           
-            <Route path="admin" element={<Admin />} />           
+          <Route path="admin" element={<AdminLayout />}>
+            <Route index element={<Admin />} />
+            <Route path="create" element={<CreateAdmin />} />
+            <Route path="list" element={<ListAdmin />} />
           </Route>
-
+          
         </Route>
-  
-        {/* 404 Not found */}
-        <Route path="*" element={<NotFound />} />
-  
       </Route>
-    )
-  );
 
+      {/* 404 Not found */}
+      <Route path="*" element={<NotFound />} />
+    </Route>
+  )
+);
 
 const Routes = () => {
-  return <RouterProvider router={router} />
-  
-}
+  return <RouterProvider router={router} />;
+};
 
-export default Routes
+export default Routes;

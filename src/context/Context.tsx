@@ -18,8 +18,9 @@ export function StateProvider({ children }: StateProviderProps) {
     setMobileSideBarNav(newValue);
   };
 
+
   return (
-    <StateContext.Provider value={{ mobileSideBarNav, updateMobileSideBarNav }}>
+    <StateContext.Provider value={{ mobileSideBarNav, updateMobileSideBarNav}}>
       {children}
     </StateContext.Provider>
   );

@@ -7,15 +7,35 @@ import LogoutOutlinedIcon from "@mui/icons-material/LogoutOutlined";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
+import  api from "../../api/api"
+
+
 function TopDropdown({ closeMenu }: any) {
   const handleMenuClose = closeMenu;
 
   const navigate = useNavigate();
 
-  const logout = () => {
-    localStorage.clear();
-    navigate("/");
-    toast.success("Successfully logged out!");
+  const logout = async() => {
+    try {
+      const response = await api.signOut();
+      const isSuccessful = response.data.isSuccessful
+      if (isSuccessful) {
+        toast.success(response.data.responseMessage);
+        // navigate("/");
+        // localStorage.clear();
+      } else {
+        toast.error(response.data.responseMessage);
+      }
+    } catch (error: any) {
+      if (error.response) {
+        toast.error(error.response.data.message );
+        // navigate("/");
+        // localStorage.clear();
+      } else {
+        toast.error("Something went wrong, please try again");
+      }
+  }
+
   };
 
   return (

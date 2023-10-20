@@ -42,13 +42,13 @@ const Login = () => {
         const response = await api.signIn(values);
         const isSuccessful = response.data.isSuccessful
         if (isSuccessful) {
-          const userData = response.data.data;
-          const token = userData.token;
-          localStorage.setItem("user", JSON.stringify(userData));
+          const userData = response.data.data.user;
+          const token = response.data.data.token;
           localStorage.setItem("token", token);
+          localStorage.setItem("user", JSON.stringify(userData));
           args.resetForm();
-          toast.success(response.data.responseMessage);
           navigate("/dashboard");
+          toast.success(response.data.responseMessage);
         } else {
           toast.error(response.data.responseMessage);
           setIsLoading(false)

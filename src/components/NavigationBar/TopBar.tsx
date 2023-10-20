@@ -28,9 +28,8 @@ const TopBar = () => {
 
   if (user) {
     const userObj = JSON.parse(user);
-    // var profileImg = userObj.profilePicUrl;
-    var fullName = userObj.fullName;
-    // var userFirstName = fullName.split(" ")[0];
+    var fullName = userObj.name;
+    var userFirstName = fullName.split(" ")[0];
   }
 
   const handleMenuOpen = (event: any) => {
@@ -134,7 +133,7 @@ const TopBar = () => {
                       fontWeight={500}
                       className="prevent-select"
                     >
-                      {fullName}
+                      {userFirstName}
                     </Typography>
                     <IconButton>
                       <img src={dropdown} alt="icon" />

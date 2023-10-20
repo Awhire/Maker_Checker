@@ -6,6 +6,14 @@ body {
   padding: 0;
 }
 
+::-webkit-scrollbar{
+  background-color:#fff;
+  width: 3px;
+}
+::-webkit-scrollbar-thumb{
+  background-color: #FF5733;
+}
+
 .prevent-select {
   -moz-user-select: none; /* firefox */
   -webkit-user-select: none; /* Safari */
@@ -13,6 +21,9 @@ body {
   user-select: none; /* Standard syntax */
 }
 
+
+
 /* .css-13lryao-MuiButtonBase-root-MuiListItemButton-root:hover {
   background-color: "primary" !important;
 } */
+
