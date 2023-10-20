@@ -19,6 +19,13 @@ const endpoints = {
     return axios({ method, url});
   },
 
+  createAccount: (payload: any) => {
+    const method = "post";
+    const url = baseURL + "/create";
+
+    return axios({ method, url, data: payload});
+  },
+
   // get userlist endpoint
   //   getUersData: () => {
   //     const method = "get";

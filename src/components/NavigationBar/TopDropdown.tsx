@@ -21,16 +21,16 @@ function TopDropdown({ closeMenu }: any) {
       const isSuccessful = response.data.isSuccessful
       if (isSuccessful) {
         toast.success(response.data.responseMessage);
-        // navigate("/");
-        // localStorage.clear();
+        navigate("/");
+        localStorage.clear();
       } else {
         toast.error(response.data.responseMessage);
       }
     } catch (error: any) {
       if (error.response) {
         toast.error(error.response.data.message );
-        // navigate("/");
-        // localStorage.clear();
+        navigate("/");
+        localStorage.clear();
       } else {
         toast.error("Something went wrong, please try again");
       }
