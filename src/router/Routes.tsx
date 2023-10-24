@@ -19,6 +19,8 @@ import RootLayout from "../layouts/RootLayout";
 import ProtectedLayout from "../layouts/ProtectedLayout";
 import DashboardLayout from "../layouts/DashboardLayout";
 import AdminLayout from "../layouts/AdminLayout";
+import NestedLayout from "../layouts/NestedLayouts";
+import AdminDetails from "../pages/admin/AdminDetails";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -34,7 +36,11 @@ const router = createBrowserRouter(
           <Route path="admin" element={<AdminLayout />}>
             <Route index element={<Admin />} />
             <Route path="create" element={<CreateAdmin />} />
-            <Route path="list" element={<ListAdmin />} />
+
+            <Route path="list" element={<NestedLayout />}>
+              <Route index element={<ListAdmin />} />
+              <Route path="details" element={<AdminDetails />} />
+            </Route>
           </Route>
           
         </Route>

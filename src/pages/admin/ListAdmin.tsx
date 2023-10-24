@@ -1,68 +1,60 @@
-import { useState } from 'react';
+import { useState, useEffect } from "react";
 import { format } from "date-fns";
+import api from "../../api/api";
+import { toast } from "react-toastify";
+import Spinner from "../../components/Spinner";
+import AdminTableDropdown from "../../components/AdminTableDropdown";
 
-import Paper from '@mui/material/Paper';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TablePagination from '@mui/material/TablePagination';
-import TableRow from '@mui/material/TableRow';
-
+import Paper from "@mui/material/Paper";
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
+import TableContainer from "@mui/material/TableContainer";
+import TableHead from "@mui/material/TableHead";
+import TablePagination from "@mui/material/TablePagination";
+import TableRow from "@mui/material/TableRow";
+import Typography from "@mui/material/Typography"
+import MoreVertIcon from "@mui/icons-material/MoreVert";
 
 
 const formatDate = (date: any) => {
-    return format(new Date(date), "MMM dd, yyyy HH:mm aa");
+  return format(new Date(date), "MMM dd, yyyy HH:mm aa");
 };
 
 interface Column {
-  id: 'name' | 'email' | 'admin_role' | "created_at" | "updated_at";
+  id: "name" | "email" | "admin_role" | "added_by_name";
   label: string;
   minWidth?: number;
-  align?: 'left';
+  align?: "left";
 }
 
 const columns: readonly Column[] = [
-  { id: 'name', label: 'Name', minWidth: 170 },
-  { id: 'email', label: 'Email', minWidth: 100 },
-  { id: 'admin_role', label: 'Admin Role', minWidth: 170, align: 'left'},
-  { id: 'created_at', label: 'Created', minWidth: 170 },
-  { id: 'updated_at', label: 'Updated', minWidth: 170 },
+  { id: "name", label: "Name", minWidth: 170 },
+  { id: "email", label: "Email", minWidth: 100 },
+  { id: "admin_role", label: "Admin Role", minWidth: 170, align: "left" },
+  { id: "added_by_name", label: "Add By", minWidth: 170 },
 ];
 
-interface Data {
+type Data = {
   name: string;
   email: string;
   admin_role: string;
-  created_at: string;
-  updated_at: string;
+  added_by_name: string;
 }
 
 function createData(
   name: string,
   email: string,
   admin_role: string,
-  created_at: string,
-  updated_at: string
+  added_by_name: string,
 ): Data {
-  return { name, email, admin_role, created_at, updated_at };
+  return { name, email, admin_role, added_by_name };
 }
 
-const rows = [
-  createData('Tery Anpwepo', 'Tery@gmail.com', "Support", "2023-05-23", "2023-05-23"),
-  createData('Brown Golipoloa', 'brown@gmail.com', "Super Admin", "2023-05-23", "2023-05-23"),
-  createData('Theophillous Aliansina', 'theophillous@gmail.com', "Supervisor", "2023-05-23", "2023-05-23"),
-  createData('Lekaan Kashamadupe', 'lekaan@gmail.com', "Support", "2023-05-23", "2023-05-23"),
-  createData('Susan Swift', 'susan@gmail.com', "Super Admin", "2023-05-23", "2023-05-23"),
-  createData('Juliet Loisey', 'Juliet@gmail.com', "Supervisor", "2023-05-23", "2023-05-23"),
-  createData('Tunde Bakare', 'tunde@gmail.com', "Support", "2023-05-23", "2023-05-23"),
-  createData('Ashley Cukaorilina', 'ashley@gmail.com', "Super Admin", "2023-05-23", "2023-05-23"),
-  createData('Adeyinka Luis', 'adeyinka@gmail.com', "Supervisor", "2023-05-23", "2023-05-23"),
-  createData('Caroline Newyoork', 'caroline@gmail.com', "Super Admin", "2023-05-23", "2023-05-23"),
-];
 
-export default function StickyHeadTable() {
+const ListAdmin = () => {
+  const [data, setData] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
 
@@ -70,14 +62,56 @@ export default function StickyHeadTable() {
     setPage(newPage);
   };
 
-  const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChangeRowsPerPage = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
     setRowsPerPage(+event.target.value);
     setPage(0);
   };
 
+  useEffect(() => {
+    const getData = async () => {
+        setIsLoading(true);
+      try {
+        const response = await api.getAdminData();
+        console.log(response.data.data)
+        const isSuccessful = response.data.isSuccessful
+        if (isSuccessful) {
+          const data = response.data.data;
+          setData(data);
+          localStorage.setItem("tableData", JSON.stringify(data));
+        } else toast.error(response.data.responseMessage);
+    } catch (error: any) {
+        console.log(error)
+        if (error.response) {
+              toast.error(error.response.data.responseMessage);
+            } else {
+                  toast.error("Something went wrong, please try again");
+                }
+            }
+            setIsLoading(false);
+    };
+
+    const localTableData = localStorage.getItem("tableData");
+    if (localTableData) {
+        setData(JSON.parse(localTableData))
+        setIsLoading(false)
+    } else getData()
+  }, []);
+
+  const rows = data.map((item: any) =>
+    createData(
+      item.name,
+      item.email,
+      item.admin_role,
+      item.added_by_name,
+    )
+  );
+
   return (
-    <Paper sx={{ width: '100%', overflow: 'hidden' }}>
-      <TableContainer sx={{ maxHeight: 540 }}>
+    <Paper sx={{ width: "100%", overflow: "hidden" }}>
+      {isLoading ? ( <Spinner /> ) : (
+        <TableContainer sx={{ maxHeight: 540 }}>
         <Table stickyHeader aria-label="sticky table">
           <TableHead>
             <TableRow>
@@ -92,26 +126,45 @@ export default function StickyHeadTable() {
               ))}
             </TableRow>
           </TableHead>
-          <TableBody>
+
+            <TableBody>
             {rows
               .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-              .map((row) => {
+              .map((row: any, index: number) => {
                 return (
-                  <TableRow hover role="checkbox" tabIndex={-1} key={row.email}>
-                    {columns.map((column) => {
-                      const value = row[column.id]
-                      return (
-                        <TableCell key={column.id} align={column.align}>
-                          { value }
-                        </TableCell>
-                      );
-                    })}
+                  <TableRow hover key={index}>
+                    <TableCell sx={{ p: "12px" }}>
+                      <Typography fontWeight={400} sx={{ fontSize: "13px" }}>
+                        {row.name}
+                      </Typography>
+                    </TableCell>
+                    <TableCell sx={{ p: "12px" }}>
+                      <Typography fontWeight={400} sx={{ fontSize: "13px" }}>
+                        {row.email}
+                      </Typography>
+                    </TableCell>
+                    <TableCell sx={{ p: "12px" }}>
+                      <Typography fontWeight={400} sx={{ fontSize: "13px" }}>
+                        {row.admin_role}
+                      </Typography>
+                    </TableCell>
+                    <TableCell sx={{ p: "12px" }}>
+                      <Typography fontWeight={400} sx={{ fontSize: "13px" }}>
+                        {row.added_by_name}
+                      </Typography>
+                    </TableCell>
+
+                    <TableCell sx={{ p: "1px" }}>
+                      <AdminTableDropdown  />
+                    </TableCell>
                   </TableRow>
                 );
               })}
-          </TableBody>
+          </TableBody> 
         </Table>
       </TableContainer>
+      )}
+      
       <TablePagination
         rowsPerPageOptions={[10, 25, 100]}
         component="div"
@@ -123,4 +176,6 @@ export default function StickyHeadTable() {
       />
     </Paper>
   );
-}
+};
+
+export default ListAdmin;

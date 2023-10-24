@@ -26,13 +26,13 @@ const endpoints = {
     return axios({ method, url, data: payload});
   },
 
-  // get userlist endpoint
-  //   getUersData: () => {
-  //     const method = "get";
-  //     const url = baseURL + "/eefab29f-f880-43cb-9d0d-9d3f74d8bb8b";
+  // get Adminlist endpoint
+    getAdminData: () => {
+      const method = "get";
+      const url = baseURL + "/admins";
 
-  //     return axios({ method, url });
-  //   },
+      return axios({ method, url });
+    },
 };
 
 export default endpoints;
