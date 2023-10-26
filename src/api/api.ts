@@ -33,6 +33,22 @@ const endpoints = {
 
       return axios({ method, url });
     },
+
+  // get Admin Details
+    getAdminDetails: (payload: any) => {
+      const method = "get";
+      const url = baseURL + "/admin/" + payload;
+
+      return axios({ method, url });
+    },
+
+  // Update Admin
+    updateAdminRole: (payload: any) => {
+      const method = "put";
+      const url = baseURL + "/updateRole/";
+
+      return axios({ method, url, data: payload });
+    },
 };
 
 export default endpoints;

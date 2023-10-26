@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import { format } from "date-fns";
 import api from "../../api/api";
 import { toast } from "react-toastify";
 import Spinner from "../../components/Spinner";
@@ -14,12 +13,7 @@ import TableHead from "@mui/material/TableHead";
 import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
 import Typography from "@mui/material/Typography"
-import MoreVertIcon from "@mui/icons-material/MoreVert";
 
-
-const formatDate = (date: any) => {
-  return format(new Date(date), "MMM dd, yyyy HH:mm aa");
-};
 
 interface Column {
   id: "name" | "email" | "admin_role" | "added_by_name";
@@ -40,6 +34,7 @@ type Data = {
   email: string;
   admin_role: string;
   added_by_name: string;
+  id: string;
 }
 
 function createData(
@@ -47,8 +42,9 @@ function createData(
   email: string,
   admin_role: string,
   added_by_name: string,
+  id: string,
 ): Data {
-  return { name, email, admin_role, added_by_name };
+  return { name, email, admin_role, added_by_name, id };
 }
 
 
@@ -57,6 +53,7 @@ const ListAdmin = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [reload, setReload] = useState(false)
 
   const handleChangePage = (event: unknown, newPage: number) => {
     setPage(newPage);
@@ -74,7 +71,6 @@ const ListAdmin = () => {
         setIsLoading(true);
       try {
         const response = await api.getAdminData();
-        console.log(response.data.data)
         const isSuccessful = response.data.isSuccessful
         if (isSuccessful) {
           const data = response.data.data;
@@ -97,7 +93,7 @@ const ListAdmin = () => {
         setData(JSON.parse(localTableData))
         setIsLoading(false)
     } else getData()
-  }, []);
+  }, [reload]);
 
   const rows = data.map((item: any) =>
     createData(
@@ -105,6 +101,7 @@ const ListAdmin = () => {
       item.email,
       item.admin_role,
       item.added_by_name,
+      item.id,
     )
   );
 
@@ -155,7 +152,7 @@ const ListAdmin = () => {
                     </TableCell>
 
                     <TableCell sx={{ p: "1px" }}>
-                      <AdminTableDropdown  />
+                      <AdminTableDropdown rowData={row} reload={reload} setReload={setReload} />
                     </TableCell>
                   </TableRow>
                 );

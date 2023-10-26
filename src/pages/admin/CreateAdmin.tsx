@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
 import * as yup from "yup";
 import api from "../../api/api";
@@ -19,7 +18,7 @@ import {
 
 const validationSchema = yup.object({
   name: yup.string().required("Email is required"),
-  role: yup.string().required("Role is required"),
+  admin_role: yup.string().required("Role is required"),
   email: yup
     .string()
     .email("Must be a valid email format")
@@ -28,7 +27,6 @@ const validationSchema = yup.object({
 });
 
 const CreateAdmin = () => {
-  const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
 
   const formik = useFormik({
@@ -47,6 +45,7 @@ const CreateAdmin = () => {
         if (isSuccessful) {
           args.resetForm();
           toast.success(response.data.responseMessage);
+          localStorage.removeItem("tableData")
         } else {
           toast.error(response.data.responseMessage);
     }
