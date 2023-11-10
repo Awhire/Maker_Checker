@@ -148,6 +148,9 @@ const AdminTableDropdown = ({ rowData, reload, setReload }: any) => {
       >
         <Fade in={openModal}>
           <Box sx={style}>
+            <Typography fontWeight={600} fontSize="14px">
+              Update Role
+            </Typography>
             <form>
               <FormControl
                 sx={{ mt: 1.5, width: "300px" }}

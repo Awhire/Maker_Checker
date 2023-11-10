@@ -5,7 +5,7 @@ import { Box } from "@mui/material";
 
 const DashboardLayout = () => {
   return (
-    <>
+    <Box sx={{overflow: "hidden"}}>
       <TopBar />
       <Box
         sx={{ display: "flex" }}
@@ -15,7 +15,7 @@ const DashboardLayout = () => {
             <Outlet />
           </Box>
       </Box>
-    </>
+    </Box>
   );
 };
 

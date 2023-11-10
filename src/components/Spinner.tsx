@@ -16,7 +16,6 @@ const Spinner = () => {
 
   return (
     <Box
-      component="div"
       sx={{
         display: "flex",
         justifyContent: "center",

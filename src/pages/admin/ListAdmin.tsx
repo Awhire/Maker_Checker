@@ -16,7 +16,7 @@ import Typography from "@mui/material/Typography"
 
 
 interface Column {
-  id: "name" | "email" | "admin_role" | "added_by_name";
+  id: "name" | "email" | "admin_role" | "added_by_name" | "created_at";
   label: string;
   minWidth?: number;
   align?: "left";
@@ -27,6 +27,7 @@ const columns: readonly Column[] = [
   { id: "email", label: "Email", minWidth: 100 },
   { id: "admin_role", label: "Admin Role", minWidth: 170, align: "left" },
   { id: "added_by_name", label: "Add By", minWidth: 170 },
+  { id: "created_at", label: "Created At", minWidth: 170 },
 ];
 
 type Data = {
@@ -34,6 +35,7 @@ type Data = {
   email: string;
   admin_role: string;
   added_by_name: string;
+  created_at: string;
   id: string;
 }
 
@@ -42,9 +44,10 @@ function createData(
   email: string,
   admin_role: string,
   added_by_name: string,
+  created_at: string,
   id: string,
 ): Data {
-  return { name, email, admin_role, added_by_name, id };
+  return { name, email, admin_role, added_by_name, created_at, id };
 }
 
 
@@ -95,12 +98,26 @@ const ListAdmin = () => {
     } else getData()
   }, [reload]);
 
+  function formatCreatedAtDate(dateString: any) {
+    const options: any = {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    };
+  
+    const date = new Date(dateString);
+    return date.toLocaleDateString("en-US", options);
+  }
+
   const rows = data.map((item: any) =>
     createData(
       item.name,
       item.email,
       item.admin_role,
       item.added_by_name,
+      item.created_at,
       item.id,
     )
   );
@@ -147,7 +164,12 @@ const ListAdmin = () => {
                     </TableCell>
                     <TableCell sx={{ p: "12px" }}>
                       <Typography fontWeight={400} sx={{ fontSize: "13px" }}>
-                        {row.added_by_name}
+                        {row.added_by_name ? row.added_by_name : "N/A"}
+                      </Typography>
+                    </TableCell>
+                    <TableCell sx={{ p: "12px" }}>
+                      <Typography fontWeight={400} sx={{ fontSize: "13px" }}>
+                        {formatCreatedAtDate(row.created_at)}
                       </Typography>
                     </TableCell>
 

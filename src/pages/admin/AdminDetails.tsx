@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import api from "../../api/api";
 import { toast } from "react-toastify";
 import Spinner from "../../components/Spinner";
@@ -13,17 +13,24 @@ import {
   FormControl,
   Select,
 } from "@mui/material";
+import back from "../../assets/back.svg";
+
 
 
 
 const AdminDetails = () => {
   const { state } = useLocation();
   const userID = state;
+  const navigate = useNavigate();
 
   const [adminRole, setAdminRole] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [buttonLoading, setButtonLoading] = useState(false);
   const [userDetails, setUserDetails] = useState<any>({});
+
+  const BackToListAdmin = () => {
+    navigate(-1);
+  };
 
   useEffect(() => {
     const getData = async () => {
@@ -46,7 +53,7 @@ const AdminDetails = () => {
     };
 
     getData();
-  }, [userID]);
+  }, []);
 
 
   const updateRole = async() => {
@@ -78,8 +85,38 @@ const AdminDetails = () => {
     setButtonLoading(false);
   }
 
+  function formatCreatedAtDate(dateString: any) {
+    const options: any = {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    };
+  
+    const date = new Date(dateString);
+    return date.toLocaleDateString("en-US", options);
+  }
+
   return (
     <Box component="div">
+      <Box
+        component="div"
+        sx={{
+          display: "flex",
+          gap: 2,
+          alignItems: "center",
+          cursor: "pointer",
+          mb: 2
+        }}
+        onClick={BackToListAdmin}
+      >
+        <img src={back} alt="back-arrow" />
+        <Typography fontWeight={400} fontSize={16}>
+          Back
+        </Typography>
+      </Box>
+
       {isLoading ? (
         <Spinner />
       ) : (
@@ -113,6 +150,18 @@ const AdminDetails = () => {
                 ? userDetails.added_by_name
                 : "System"}
             </p>
+            <p style={{ textTransform: "capitalize" }}>
+              <span style={{ fontWeight: 600, paddingRight: "20px" }}>
+                Created At:
+              </span>
+              {formatCreatedAtDate(userDetails.created_at)}
+            </p>
+            <p style={{ textTransform: "capitalize" }}>
+              <span style={{ fontWeight: 600, paddingRight: "20px" }}>
+                Updated At:
+              </span>
+              {formatCreatedAtDate(userDetails.updated_at)}
+            </p>
           </Box>
 
           <Typography sx={{ color: "text.secondary", fontSize: "14px", mt: 6 }}>
@@ -125,7 +174,7 @@ const AdminDetails = () => {
               fullWidth
               size="small"
             >
-              <InputLabel id="demo-select-small-label" sx={{ fontSize: 14 }}>
+              <InputLabel id="demo-select-small-label" style={{ fontSize: 14 }}>
                 Role
               </InputLabel>
               <Select
@@ -139,9 +188,6 @@ const AdminDetails = () => {
                 }}
                 sx={{ fontSize: 16 }}
               >
-                <MenuItem value="">
-                  <em>None</em>
-                </MenuItem>
                 <MenuItem value="support">Support</MenuItem>
                 <MenuItem value="supervisor">Supervisor</MenuItem>
                 <MenuItem value="superadmin">Super Admin</MenuItem>

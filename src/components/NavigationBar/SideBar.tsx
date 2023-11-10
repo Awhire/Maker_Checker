@@ -20,6 +20,14 @@ import { useStateValue } from "../../context/Context";
 
 const drawerWidth = 225;
 
+const user = localStorage.getItem("user");
+let userRole: any;
+if (user) {
+  const userObj = JSON.parse(user);
+  userRole = userObj.admin_role;
+}
+console.log("userRole:", userRole)
+
 const SideBar = () => {
   const { mobileSideBarNav, updateMobileSideBarNav } = useStateValue();
   const location = useLocation();
@@ -59,6 +67,8 @@ const SideBar = () => {
         <List sx={{ mt: 10 }}>
           {MenuItems.map((item: any, index: any) => (
             <Box key={index}>
+              {!(userRole === "support" && item.name === 'Admin') &&
+              <>
               {item.categories && (
                 <Typography
                   sx={{
@@ -82,7 +92,7 @@ const SideBar = () => {
               >
                 <ListItemButton selected={pathname.includes(item.path)}>
                   <ListItemIcon sx={{ minWidth: "35px" }}>
-                    <img src={item.icon} alt={item.name} />
+                    <img src={item.icon} alt={item.name} width={20} />
                   </ListItemIcon>
                   <ListItemText
                     primary={item.name}
@@ -95,7 +105,12 @@ const SideBar = () => {
                   />
                 </ListItemButton>
               </ListItem>
+              </>
+              
+              }
+              
             </Box>
+
           ))}
         </List>
       </Drawer>
